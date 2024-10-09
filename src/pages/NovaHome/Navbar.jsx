@@ -36,7 +36,7 @@ const Navbar = () => {
           </div>
           <div className="hidden sm:flex items-center space-x-8">
             <Link
-             to={`https://care1-nova-home-care-fe.vercel.app/`}
+             to={`https://jobseeker-nova-home-care-fe.vercel.app/`}
               className="bg-teal-700 text-white px-6 py-2 rounded-md text-lg font-medium hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
             >
               Jobs
