@@ -117,6 +117,10 @@ import EmployerList from "./pages/employers-list/employers-list";
 import Community from "./components/dashboard-pages/employers-dashboard/community/Community";
 import Novahome from './pages/Novahome.jsx'
 import ForgotPassword from "./pages/others/ForgotPassword";
+import EmployerJobDetails from "./pages/employers-dashboard/employers-job-details";
+import Caregivers from '@/pages/Caregivers'
+import EditProfile from '@/pages/Caregivers/EditProfile'
+
 function App() {
   useEffect(() => {
     Aos.init({
@@ -194,6 +198,18 @@ function App() {
                 <Route
                   path="employers-list-v2"
                   element={<EmployerListPage2 />}
+                />
+                <Route
+                  path="employers-job-detail/:id"
+                  element={<EmployerJobDetails />}
+                />
+                <Route
+                  path="caregiver-profile-page/:id"
+                  element={<Caregivers />}
+                />
+                <Route
+                  path="caregiver-edit-profile/:id"
+                  element={<EditProfile />}
                 />
                  <Route
                   path="employers-list"
