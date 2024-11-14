@@ -1,11 +1,9 @@
-import FooterDefault from "../../footer/common-footer";
-import Breadcrumb from "../../common/Breadcrumb";
-import LoginPopup from "../../common/form/login/LoginPopup";
-import DefaulHeader2 from "../../header/DefaulHeader2";
-import MobileMenu from "../../header/MobileMenu";
-import FilterTopBox from "./FilterTopBox";
-import FilterSidebar from "./FilterSidebar";
+
 import DashboardHeader from "@/components/header/DashboardHeader";
+import LoginPopup from "@/components/common/form/login/LoginPopup";
+import MobileMenu from "@/components/header/MobileMenu";
+import FilterSidebar from "@/components/candidates-listing-pages/candidates-list-v1/FilterSidebar";
+import EditableProfilePage from "./EditProfile";
 
 const index = () => {
   return (
@@ -47,7 +45,7 @@ const index = () => {
 
             <div className="content-column col-lg-12 col-md-12 col-sm-12">
               <div className="ls-outer">
-                <FilterTopBox />
+                <EditableProfilePage />
                 {/* <!-- ls Switcher --> */}
               </div>
             </div>
@@ -59,7 +57,7 @@ const index = () => {
       </section>
       {/* <!--End Listing Page Section --> */}
 
-      <FooterDefault footerStyle="alternate5" />
+      {/* <FooterDefault footerStyle="alternate5" /> */}
       {/* <!-- End Main Footer --> */}
     </>
   );

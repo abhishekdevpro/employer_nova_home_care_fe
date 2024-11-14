@@ -1,842 +1,541 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import Quill CSS
-import { Constant } from "@/utils/constant/constant";
-import { MultiSelector, MultiSelectorContent, MultiSelectorInput, MultiSelectorItem, MultiSelectorList,MultiSelectorTrigger } from "@/components/ui/multiSelector";
-import { BriefcaseIcon, CheckIcon, ClockIcon, HandIcon, UserIcon } from "lucide-react";
-import { IoDocument } from "react-icons/io5";
-import { FaPennyArcade } from "react-icons/fa";
-import { FaPerson, FaUserGroup } from "react-icons/fa6";
-import { IoFemale, IoShieldOutline } from "react-icons/io5";
-import { SlUserFemale } from "react-icons/sl";
-import { BiHandicap } from "react-icons/bi";
-import { Switch } from "@/components/ui/switch";
-import { FaCheckCircle } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
 
-const tags = [
-  { value: "Banking", label: "Banking" },
-  { value: "Digital & Creative", label: "Digital & Creative" },
-  { value: "Retail", label: "Retail" },
-  { value: "Human Resources", label: "Human Resources" },
-  { value: "Management", label: "Management" },
-  { value: "Accounting & Finance", label: "Accounting & Finance" },
-  { value: "Digital", label: "Digital" },
-  { value: "Creative Art", label: "Creative Art" },
-];
+import React, { useState } from 'react';
 
-const PostBoxForm = () => {
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [jobTitles, setJobTitles] = useState([]);
-  const [locations, setLocations] = useState([]);
-  const [experienceYears, setExperienceYears] = useState([]);
-  const [expectedExperienceYears, setExpectedExperienceYears] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [functionalTypes, setFunctionalTypes] = useState([]);
-  const [salaryTypes, setSalaryTypes] = useState([]);
-  const [expectedSalaryTypes, setExpectedSalaryTypes] = useState([]);
-  const [batchTypes, setBatchTypes] = useState([]);
-  const [selectedTypes, setSelectedTypes] = useState([]);
-  const [countryId, setCountryId] = useState("");
-  const [stateId, setStateId] = useState("");
-  const [cityId, setCityId] = useState("");
-  
-  const [keywords, setKeywords] = useState({ job: "", location: "" });
-  const [dropdownVisibility, setDropdownVisibility] = useState({
-    job: false,
-    location: false,
-  });
-
-  const getCommaSeparatedTags = () => {
-    if (selectedTags.length === 0) {
-      return "";
-    }
-    return Array.isArray(selectedTags) ? selectedTags.join(', ') : "";
-  };
-  
-  
+const MultiStepCareForm = () => {
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    job_title: "",
-    location: "",
-    description: "",
-    category_id: "",
-    functional_area_id: "",
-    experience_year: "",
-    expected_experience_year: "",
-    salary_type: "",
-    expected_salary_type: "",
-    batch_start_year: "",
-    batch_end_year: "",
-    Skills: getCommaSeparatedTags(),
+    careType: '',
+    zipCode: '',
+    timing: '',
+    specificCare: '',
+    travelDistance: 2,
+    children: [{
+      birthDate: ''
+    }],
+    isExpecting: false,
+    additionalCare: {
+      seniorCare: false,
+      petCare: false,
+      housekeeping: false,
+      tutoring: false
+    },
+    startDate: '',
+    endDate: '',
+    isFlexible: false,
+    schedule: {
+      days: [],
+      times: [],
+      isVariable: false
+    }
   });
-  const [videoFile, setVideoFile] = useState(null);
 
-  const baseurl = "https://api.sentryspot.co.uk/api/employeer/";
-  const token = localStorage.getItem(Constant.USER_TOKEN); // Replace with your actual token
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}experience`, { headers: { Authorization: token } })
-      .then((response) => setExperienceYears(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}experience`, { headers: { Authorization: token } })
-      .then((response) => setExpectedExperienceYears(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}job-categories`, { headers: { Authorization: token } })
-      .then((response) => setCategories(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}functional-area`, { headers: { Authorization: token } })
-      .then((response) => setFunctionalTypes(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}salary-range`, { headers: { Authorization: token } })
-      .then((response) => setSalaryTypes(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}salary-range`, { headers: { Authorization: token } })
-      .then((response) => setExpectedSalaryTypes(response.data.data))
-      .catch((error) => console.error(error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${baseurl}years`, {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((response) => {
-        setBatchTypes(response.data.data);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-  }, []);
-
-  const [jobTypes, setJobTypes] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get('https://api.sentryspot.co.uk/api/employeer/job-types', {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then(response => setJobTypes(response.data.data))
-      .catch(error => console.error("Error fetching job types:", error));
-  }, []);
-
-  const fetchData = async (url, setData, dropdownKey) => {
-    try {
-      const response = await axios.get(url);
-      setData(response.data.data || []);
-      setDropdownVisibility((prev) => ({ ...prev, [dropdownKey]: true }));
-    } catch (error) {
-      console.error(`Error fetching ${dropdownKey}:`, error);
-    }
-  };
-
-  useEffect(() => {
-    if (keywords.job.length > 1)
-      fetchData(
-        `https://api.sentryspot.co.uk/api/jobseeker/job-title?job_title_keyword=${keywords.job}`,
-        setJobTitles,
-        "job"
-      );
-    else setDropdownVisibility((prev) => ({ ...prev, job: false }));
-  }, [keywords.job]);
-
-  useEffect(() => {
-    if (keywords.location.length > 1)
-      fetchData(
-        `https://api.sentryspot.co.uk/api/jobseeker/locations?locations=${keywords.location}`,
-        (data) => {
-          const countries = data.countries || [];
-          const states = countries.flatMap((c) => c.states) || [];
-          const cities = states.flatMap((s) => s.cities) || [];
-          const locationsData = cities.map((city) => {
-            const state = states.find((s) => s.cities.some((c) => c.id === city.id));
-            const country = countries.find((c) => c.states.some((s) => s.id === state.id));
+  // const handleNext = () => {
+  //   if (step === 8) {
+  //     // Validate required fields
+  //     if (!formData.careType || !formData.zipCode || !formData.timing) {
+  //       alert('Please fill in all required fields.');
+  //       return;
+  //     }
   
-            return {
-              city: city.name,
-              state: state?.name,
-              country: country?.name,
-              country_id: country?.id,
-              state_id: state?.id,
-              city_id: city.id
-            };
-          });
-          setLocations(locationsData);
-        },
-        "location"
-      );
-    else setDropdownVisibility((prev) => ({ ...prev, location: false }));
-  }, [keywords.location]);
+  //     // Save data to local storage
+  //     localStorage.setItem('careFormData', JSON.stringify(formData));
   
+  //     // Reset form
+  //     setFormData({
+  //       careType: '',
+  //       zipCode: '',
+  //       timing: '',
+  //       specificCare: '',
+  //       travelDistance: 2,
+  //       children: [{ birthDate: '' }],
+  //       isExpecting: false,
+  //       additionalCare: {
+  //         seniorCare: false,
+  //         petCare: false,
+  //         housekeeping: false,
+  //         tutoring: false
+  //       },
+  //       startDate: '',
+  //       endDate: '',
+  //       isFlexible: false,
+  //       schedule: {
+  //         days: [],
+  //         times: [],
+  //         isVariable: false
+  //       }
+  //     });
   
-
- // const handleChange = (key) => (e) =>
-    //setKeywords({ ...keywords, [key]: e.target.value });
-
-
- const handleSelect = (key, selectedItem) => {
-  if (key === "job") {
-    setKeywords((prevKeywords) => ({
-      ...prevKeywords,
-      [key]: selectedItem // Assuming selectedItem is a string
-    }));
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      job_title: selectedItem // Ensure selectedItem contains the correct job title
-    }));
-  } else if (key === "location") {
-    setKeywords((prevKeywords) => ({
-      ...prevKeywords,
-      [key]: `${selectedItem.city}, ${selectedItem.state}, ${selectedItem.country}`
-    }));
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      location: `${selectedItem.city}, ${selectedItem.state}, ${selectedItem.country}`
-    }));
-    setCountryId(selectedItem.country_id);
-    setStateId(selectedItem.state_id);
-    setCityId(selectedItem.city_id);
-  }
-
-  setDropdownVisibility((prevVisibility) => ({
-    ...prevVisibility,
-    [key]: false
-  }));
-};
-
+  //     // Optionally, reset step to 1
+  //     setStep(1);
   
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleDescriptionChange = (value) => {
-    setFormData({ ...formData, description: value });
-  };
-
-  const handleFileChange = (e) => {
-    setVideoFile(e.target.files[0]);
-  };
-
- // Utility function to strip HTML tags
-const stripHtmlTags = (html) => {
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  return doc.body.textContent || "";
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // Strip HTML tags from description
-  const strippedDescription = stripHtmlTags(formData.description);
-
-  // Validate required fields
-  if (!strippedDescription.trim()) {
-    alert("Please enter a job description.");
-    return;
-  }
-
-   // Get comma-separated tags
-   const skills = getCommaSeparatedTags();
-   if (!skills) {
-     alert("Please select at least one skill.");
-     return;
-   }
-    
-
-  try {
-    const formDataToSubmit = new FormData();
-    formDataToSubmit.append("job_title", formData.job_title);
-    formDataToSubmit.append("location", formData.location);
-    formDataToSubmit.append("job_description", strippedDescription); // Strip HTML tags
-    formDataToSubmit.append("category_id", formData.category_id);
-    formDataToSubmit.append("functional_area_id", formData.functional_area_id);
-    formDataToSubmit.append("experience_year", formData.experience_year);
-    formDataToSubmit.append("expected_experience_year", formData.expected_experience_year);
-    formDataToSubmit.append("salary_type", formData.salary_type);
-    formDataToSubmit.append("expected_salary_type", formData.expected_salary_type);
-    formDataToSubmit.append("batch_start_year", formData.batch_start_year);
-    formDataToSubmit.append("batch_end_year", formData.batch_end_year);
-    formDataToSubmit.append("skills", skills);
-    formDataToSubmit.append("country_id", countryId || "");
-    formDataToSubmit.append("state_id", stateId || "");
-    formDataToSubmit.append("city_id", cityId || "");
-
-    if (videoFile) {
-      formDataToSubmit.append("video_jd_file", videoFile);
-    }
-
-    console.log("Submitting form data:", Object.fromEntries(formDataToSubmit));
-
-    const response = await axios.post(
-      "https://api.sentryspot.co.uk/api/employeer/job-post",
-      formDataToSubmit,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
-      }
-    );
-    toast.success("Job posted successfully:", response.data);
-  } catch (error) {
-    if (error.response) {
-      toast.error("Error details:", error.response.data);
-    } else {
-      toast.error("Error posting job:", error);
-    }
-  }
-};
-
-console.log("Selected Tags:", selectedTags);
-console.log("Comma-Separated Tags:", getCommaSeparatedTags());
-
-
-  const handleTypeClick = (id) => {
-    setSelectedTypes((prev) =>
-      prev.includes(id) ? prev.filter((typeId) => typeId !== id) : [...prev, id]
-    );
-  };
-  
-  const getIcon = (jobTypeName) => {
-    switch (jobTypeName.toLowerCase()) {
-      case "full-time":
-        return <BriefcaseIcon className="w-8 h-8" />;
-      case "part-time":
-        return <ClockIcon className="w-8 h-8" />;
-      case "contract":
-        return <IoDocument className="w-8 h-8" />;
-      case "temporary":
-        return <ClockIcon className="w-8 h-8 text-yellow-500" />;
-      case "other":
-        return <FaPerson className="w-8 h-8" />;
-      case "volunteer":
-        return <HandIcon className="w-8 h-8" />;
-      case "internship":
-        return <FaUserGroup className="w-8 h-8" />;
-      default:
-        return <UserIcon className="w-8 h-8" />;
-    }
-  };
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [makesUsUnique, setMakesUsUnique] = useState([
-    {
-      title: "Save time to automating your hiring workflow",
-      Description_title: "Rejection email preview",
-      Description: "Applicant will recive this message",
-      key: "health_insurance",
-      toogle: true,
-      value: "",
-    },
-  ]);
-
-  const Dhiring = [
-    { icon: <IoFemale size={30} color="gray" />, label: "female Candidate" },
-    {
-      icon: <SlUserFemale size={30} color="gray" />,
-      label: "women joining back the work force",
-    },
-    {
-      icon: <IoShieldOutline size={30} color="gray" />,
-      label: "Ex-Defence personnel",
-    },
-    {
-      icon: <BiHandicap size={30} color="gray" />,
-      label: " Differently abled candidates",
-    },
-    { icon: <SlUserFemale size={30} color="gray" />, label: "work from home" },
-  ];
-  const handleSelect1 = (id) => {
-    setSelectedItem(id);
-  };
-
-  const handleAiAssist = async () => {
-    const { job_title, location } = formData;
-  
-    // Check if both job_title and location are provided
-    if (!job_title || !location) {
-      alert("Please select a job title and location before proceeding.");
-      return;
-    }
-  
-    // Ensure values are clean and formatted as strings
-    const cleanJobTitle = String(job_title).trim();
-    const cleanLocation = String(location).trim();
-  
-    // Construct the request body as a string
-    const requestBody = {
-      keyword: "Job Description",
-      title: cleanJobTitle,
-      company: "SVAP Infotech",
-      location: cleanLocation,
-    };
-  
-    console.log("Request Body for AI Assist:", JSON.stringify(requestBody));
-  
-    try {
-      const response = await axios.post(
-        "https://api.sentryspot.co.uk/api/employeer/ai-job-description",
-        requestBody, {
-          headers: {
-            
-            Authorization: token,
-          },
+  //     alert('Form submitted successfully!');
+  //   } else {
+  //     setStep(step + 1);
+  //   }
+  // };
+  const handleNext = () => {
+    // Validation for each step
+    switch (step) {
+      case 1:
+        if (!formData.careType) {
+          alert('Please select a type of care.');
+          return;
         }
-      );
-      console.log("AI Assist Response:", response.data);
-      if (response.data.code === 200) {
-        // Update the job description with the AI response
-        setFormData({
-          ...formData,
-          description: response.data.data.description,
-        });
-      } else {
-        alert("Failed to get job description from AI. Please try again.");
+        break;
+      case 2:
+        if (!formData.zipCode) {
+          alert('Please enter a ZIP code.');
+          return;
+        }
+        break;
+      case 3:
+        if (!formData.timing) {
+          alert('Please select when you need care.');
+          return;
+        }
+        break;
+      case 4:
+        if (!formData.specificCare) {
+          alert('Please select a kind of care.');
+          return;
+        }
+        break;
+      case 5:
+        if (formData.children.some(child => !child.birthDate)) {
+          alert('Please enter birth dates for all children.');
+          return;
+        }
+        break;
+      case 7:
+        if (!formData.startDate) {
+          alert('Please enter an estimated start date.');
+          return;
+        }
+        break;
+      // Add more cases if needed for other steps
+    }
+  
+    if (step === 8) {
+      // Validate required fields for the final step
+      if (!formData.careType || !formData.zipCode || !formData.timing) {
+        alert('Please fill in all required fields.');
+        return;
       }
-    } catch (error) {
-      console.error("Error with AI Assist:", error);
-      alert("Failed to fetch AI job description. Please try again.");
+  
+      // Save data to local storage
+      localStorage.setItem('careFormData', JSON.stringify(formData));
+  
+      // Reset form
+      setFormData({
+        careType: '',
+        zipCode: '',
+        timing: '',
+        specificCare: '',
+        travelDistance: 2,
+        children: [{ birthDate: '' }],
+        isExpecting: false,
+        additionalCare: {
+          seniorCare: false,
+          petCare: false,
+          housekeeping: false,
+          tutoring: false
+        },
+        startDate: '',
+        endDate: '',
+        isFlexible: false,
+        schedule: {
+          days: [],
+          times: [],
+          isVariable: false
+        }
+      });
+  
+      // Optionally, reset step to 1
+      setStep(1);
+  
+      alert('Form submitted successfully!');
+      Navigate('/employers-list-v2')
+    } else {
+      setStep(step + 1);
     }
   };
-
-  const handleChange = (key) => (e) => {
-    setKeywords({ ...keywords, [key]: e.target.value });
+  const handleBack = () => {
+    setStep(step - 1);
   };
-  
 
-  return (
-    <form className="default-form" onSubmit={handleSubmit}>
-      <div className="form-group col-lg-12 col-md-12  mt-4">
-        <label htmlFor="job" className="block text-sm font-medium text-gray-700">
-          Job Title
-        </label>
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  // Previous steps remain the same...
+  // (Steps 1-4 from the previous implementation)
+  const renderStep1 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">What type of care do you need?</h2>
+      <p className="text-gray-600 mb-4">Joining Care gives you access to caregivers for the whole household.</p>
+      
+      {[
+        { id: 'child', label: 'Child care', icon: '👶' },
+        { id: 'senior', label: 'Senior care', icon: '🤍' },
+        { id: 'housekeeping', label: 'Housekeeping', icon: '🏠' },
+        { id: 'pet', label: 'Pet care', icon: '🐾' },
+        { id: 'tutoring', label: 'Tutoring', icon: '📚' }
+      ].map((option) => (
+        <button
+          key={option.id}
+          onClick={() => handleInputChange('careType', option.id)}
+          className={`w-full p-4 rounded-lg border-2 flex items-center space-x-3 hover:bg-teal-50 transition-colors
+            ${formData.careType === option.id ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
+        >
+          <span className="text-2xl">{option.icon}</span>
+          <span className="text-lg text-gray-700">{option.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+
+  const renderStep2 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">Where do you need care?</h2>
+      <div className="relative">
         <input
           type="text"
-          name="job"
-          placeholder="Type job title"
-          onChange={handleChange("job")}
-          value={keywords.job}
+          placeholder="Enter ZIP code"
+          className="w-full p-4 rounded-lg border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none text-lg"
+          value={formData.zipCode}
+          onChange={(e) => handleInputChange('zipCode', e.target.value)}
           required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        />
-        {dropdownVisibility.job && (
-          <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-            {jobTitles.map((item, index) => (
-              <li
-                key={index}
-                onClick={() => handleSelect("job", item.name)}
-                className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-              >
-                {item.name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-<ToastContainer/>
-      <div className="form-group col-lg-12 col-md-12 relative mt-4">
-  <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-    Location
-  </label>
-  <input
-    type="text"
-    name="location"
-    placeholder="Type location"
-    onChange={handleChange("location")}
-    value={keywords.location}
-    required
-    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-  />
-  {dropdownVisibility.location && (
-    <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-      {locations.map((item, index) => (
-        <li
-          key={index}
-          onClick={() => handleSelect("location", item)}
-          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-        >
-          {item.city}, {item.state}, {item.country}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-{/* Description Editor */}
-<div className="form-group col-lg-12 col-md-12 mt-4">
-  <div className="flex justify-between">
-    <label htmlFor="description" className="pt-4 font-semibold">
-      Job Description
-    </label>
-    <button
-      className="border-1 border-violet-700 rounded-md py-2 px-2 m-2 font-semibold"
-      onClick={handleAiAssist}
-    >
-      AI Assist +
-    </button>
-  </div>
-  <ReactQuill
-    value={formData.description}
-    onChange={handleDescriptionChange}
-    className={`mt-1 border border-gray-300 h- rounded-md shadow-sm ${!formData.description ? 'border-red-500' : ''}`}
-    placeholder="Enter job description..."
-  />
-  {!formData.description && (
-    <p className="text-red-500 text-sm mt-1">Job description is required.</p>
-  )}
-</div>
-
-
-      {/* Experience Year Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="experience_year" className="block text-sm font-medium text-gray-700">
-        Min Experience Year
-        </label>
-        <select
-          name="experience_year"
-          value={formData.experience_year}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Min Experience Year</option>
-          {experienceYears.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Expected Experience Year Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="expected_experience_year" className="block text-sm font-medium text-gray-700">
-          Max Experience Year
-        </label>
-        <select
-          name="expected_experience_year"
-          value={formData.expected_experience_year}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value=""> Max Experience Year</option>
-          {expectedExperienceYears.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Category Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="category_id" className="block text-sm font-medium text-gray-700">
-          Job Category
-        </label>
-        <select
-          name="category_id"
-          value={formData.category_id}
-          onChange={handleFormChange}
-          required
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Job Category</option>
-          {categories.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Functional Area Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="functional_area_id" className="block text-sm font-medium text-gray-700">
-          Functional Area
-        </label>
-        <select
-          name="functional_area_id"
-          value={formData.functional_area_id}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Functional Area</option>
-          {functionalTypes.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Salary Type Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="salary_type" className="block text-sm font-medium text-gray-700">
-          Salary Type
-        </label>
-        <select
-          name="salary_type"
-          value={formData.salary_type}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Salary Type</option>
-          {salaryTypes.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Expected Salary Type Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="expected_salary_type" className="block text-sm font-medium text-gray-700">
-          Expected Salary Type
-        </label>
-        <select
-          name="expected_salary_type"
-          value={formData.expected_salary_type}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Expected Salary Type</option>
-          {expectedSalaryTypes.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Batch Start Year Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="batch_start_year" className="block text-sm font-medium text-gray-700">
-          Batch Start Year
-        </label>
-        <select
-          name="batch_start_year"
-          value={formData.batch_start_year}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Batch Start Year</option>
-          {batchTypes.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Batch End Year Dropdown */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="batch_end_year" className="block text-sm font-medium text-gray-700">
-          Batch End Year
-        </label>
-        <select
-          name="batch_end_year"
-          value={formData.batch_end_year}
-          onChange={handleFormChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select Batch End Year</option>
-          {batchTypes.map((item, index) => (
-            <option key={index} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Video Upload */}
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <label htmlFor="video" className="block text-sm font-medium text-gray-700">
-          Upload Video
-        </label>
-        <input
-          type="file"
-          accept="video/*"
-          onChange={handleFileChange}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
+    </div>
+  );
 
-      
-
-
-      <div className="form-group col-lg-12 col-md-12 mt-4">
-        <div className="flex justify-between">
-          <label htmlFor="tags" className="pt-4 font-semibold">
-            Skills
-          </label>
-          <button className="border-1 border-violet-700 rounded-md py-2 px-2 m-2 font-semibold">
-            AI Assist +
-          </button>
-        </div>
-        <MultiSelector
-  values={selectedTags}
-  onValuesChange={(e) => {
-    // Debugging to check how values are updated
-    console.log("Updated Tags:", e);
-    setSelectedTags(e);
-  }}
-  className="w-full relative"
-  name="tags"
->
-  <MultiSelectorTrigger className="bg-violet-200">
-    <MultiSelectorInput
-      placeholder="Select tags"
-      className="bg-violet-500"
-    />
-  </MultiSelectorTrigger>
-  <MultiSelectorContent>
-    <MultiSelectorList className="bg-white absolute z-10">
-      {tags.map((item) => (
-        <MultiSelectorItem value={item.value} key={item.value}>
-          {item.label}
-        </MultiSelectorItem>
+  const renderStep3 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">When do you need care?</h2>
+      {[
+        { id: 'now', label: 'Right now' },
+        { id: 'week', label: 'Within a week' },
+        { id: 'month', label: 'In 1-2 months' },
+        { id: 'browsing', label: 'Just browsing' }
+      ].map((option) => (
+        <button
+          key={option.id}
+          onClick={() => handleInputChange('timing', option.id)}
+          className={`w-full p-4 rounded-lg border-2 text-left hover:bg-teal-50 transition-colors
+            ${formData.timing === option.id ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
+        >
+          <span className="text-lg text-gray-700">{option.label}</span>
+        </button>
       ))}
-    </MultiSelectorList>
-  </MultiSelectorContent>
-</MultiSelector>
+    </div>
+  );
 
-      </div>
+  const renderStep4 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">What kind of care?</h2>
+      {[
+        {
+          id: 'nanny',
+          label: 'Nannies / recurring sitters',
+          description: 'Hire for regular hours, ongoing care, full or part-time'
+        },
+        {
+          id: 'oneTime',
+          label: 'One-time sitters',
+          description: 'Instantly book for events, occasional plans or backup care'
+        },
+        {
+          id: 'daycare',
+          label: 'Daycare centers',
+          description: 'Find daycares, learning centers, or pre-schools near you'
+        }
+      ].map((option) => (
+        <button
+          key={option.id}
+          onClick={() => handleInputChange('specificCare', option.id)}
+          className={`w-full p-4 rounded-lg border-2 text-left hover:bg-teal-50 transition-colors
+            ${formData.specificCare === option.id ? 'border-teal-500 bg-teal-50' : 'border-gray-200'}`}
+        >
+          <div className="space-y-1">
+            <span className="block text-lg font-medium text-gray-700">{option.label}</span>
+            <span className="block text-sm text-gray-500">{option.description}</span>
+          </div>
+        </button>
+      ))}
 
- {/* Course Type Section */}
- <div className="form-group col-lg-12 col-md-12">
-  <label htmlFor="job_type">Course Type</label>
-  <div className="flex flex-wrap gap-4 mt-2">
-    {jobTypes.map((jobType) => (
-      <div
-        key={jobType.id}
-        className={`relative cursor-pointer p-2 rounded-lg flex flex-col items-center justify-center w-40 h-36 text-center 
-          ${selectedTypes.includes(jobType.id)
-            ? "shadow-inner shadow-indigo-700 border-2 border-violet-700"
-            : "border "}`}
-        onClick={() => handleTypeClick(jobType.id)}
-      >
-        <div className="text-center">
-          <div>{getIcon(jobType.name)}</div>
-        </div>
-        <p className="text-sm mt-2">{jobType.name}</p>
-        {selectedTypes.includes(jobType.id) && (
-          <CheckIcon className="absolute -top-2 -right-1 rounded-full border-2 border-violet-700 w-7 h-7 text-violet-700 bg-white" />
-        )}
-      </div>
-    ))}
-  </div>
-</div>
-
-
- <div className="form-group col-lg-12 col-md-12 my-3">
-          <label htmlFor="email">Add Screening Questions</label> <br />
-          Candidates will be asked to answer these question before they submit
-          their application. You can add up to 10 questions.
-          <br />
-          <button className="border-1 rounded-md py-2 my-5 border-violet-500">
-            Add Question
+      <div className="mt-8">
+        <h3 className="text-lg font-medium text-gray-700 mb-4">How far are you willing to travel?</h3>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => handleInputChange('travelDistance', Math.max(1, formData.travelDistance - 1))}
+            className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center hover:bg-teal-200"
+          >
+            -
+          </button>
+          <span className="text-xl font-medium text-gray-700">{formData.travelDistance} miles</span>
+          <button
+            onClick={() => handleInputChange('travelDistance', Math.min(50, formData.travelDistance + 1))}
+            className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center hover:bg-teal-200"
+          >
+            +
           </button>
         </div>
-        <div className="form-group col-lg-12 col-md-12">
-          <label htmlFor="diversity_hiring">Diversity hiring !</label>
+      </div>
+    </div>
+  );
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {Dhiring?.map((item, id) => (
-              <div
-                key={id}
-                className={`relative flex flex-col items-center justify-center border  p-2 text-center cursor-pointer ${
-                  selectedItem === id
-                    ? "  border-blue-500 border-4"
-                    : "border-gray-300"
-                }`}
-                onClick={() => handleSelect1(id)}
-              >
-                {selectedItem === id && (
-                  <FaCheckCircle className="absolute top-0 right-0 text-blue-500 m-1" />
-                )}
-                <div className="text-xl mb-1 flex justify-center items-center">
-                  {item?.icon}
-                </div>
-                <p className="text-sm font-medium">{item?.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {makesUsUnique?.map((item, index) => (
-          <div className="form-group col-lg-12 col-md-12 " key={index}>
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-[15px] font-semibold">{item?.title}</label>
-
-              <Switch
-                className="rounded-xl data-[state=checked]:bg-[#0292e6]"
-                checked={item?.toogle}
-                onCheckedChange={(e) => {
-                  setMakesUsUnique((prev) => {
-                    return prev.map((val) => {
-                      if (val?.key === item?.key) {
-                        return { ...item, toogle: e };
-                      }
-                      return val;
-                    });
-                  });
-                }}
-              />
-            </div>
-            <h3 className="my-4 mt-10 ">{item?.Description}</h3>
-            <h3 className="mb-2">{item?.Description_title}</h3>
-            {item?.toogle && (
-              <input
-                type="text"
-                className="h-40 "
-                style={{ height: "200px" }}
-                placeholder={item?.title}
-              />
-            )}
-          </div>
-        ))}
-        <div className="form-group col-lg-12 col-md-12 text-right">
-          <button className="theme-btn btn-style-one" type="submit" >
-           
-          </button>
-        </div>
+  const renderStep5 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">Who needs care?</h2>
       
-
+      {formData.children.map((child, index) => (
+        <div key={index} className="space-y-2">
+          <label className="block text-gray-700 mb-2">Child {index + 1}</label>
+          <input
+            type="text"
+            placeholder="Birth Month and Year (MM/YYYY)"
+            className="w-full p-4 rounded-lg border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+            value={child.birthDate}
+            required
+            onChange={(e) => {
+              const newChildren = [...formData.children];
+              newChildren[index].birthDate = e.target.value;
+              handleInputChange('children', newChildren);
+            }}
+          />
+        </div>
+      ))}
 
       <button
-        type="submit"
-        className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        onClick={() => handleInputChange('children', [...formData.children, { birthDate: '' }])}
+        className="flex items-center text-teal-600 hover:text-teal-700 font-medium space-x-2"
       >
-        Submit
+        <span className="text-xl">+</span>
+        <span>Add another child</span>
       </button>
-    </form>
+
+      <label className="flex items-center space-x-3 mt-4">
+        <input
+          type="checkbox"
+          checked={formData.isExpecting}
+          onChange={(e) => handleInputChange('isExpecting', e.target.checked)}
+          required
+          className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+        />
+        <span className="text-gray-700">I'm expecting</span>
+      </label>
+    </div>
+  );
+
+  const renderStep6 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">Do you need any other types of care?</h2>
+      
+      {Object.entries({
+        seniorCare: 'Senior care',
+        petCare: 'Pet care',
+        housekeeping: 'Housekeeping',
+        tutoring: 'Tutoring'
+      }).map(([key, label]) => (
+        <label key={key} className="flex items-center justify-between p-4 rounded-lg border-2 border-gray-200">
+          <span className="text-lg text-gray-700">{label}</span>
+          <input
+            type="checkbox"
+            checked={formData.additionalCare[key]}
+            onChange={(e) => handleInputChange('additionalCare', {
+              ...formData.additionalCare,
+              [key]: e.target.checked
+            })}
+            className="w-5 h-5 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+            required
+          />
+        </label>
+      ))}
+
+      <button
+        onClick={handleNext}
+        className="w-full text-center text-gray-500 hover:text-gray-700 mt-4"
+      >
+        Skip for now
+      </button>
+    </div>
+  );
+
+  const renderStep7 = () => (
+    <div className="space-y-4">
+      <div className="bg-blue-50 p-4 rounded-lg mb-6">
+        <div className="flex items-center space-x-2 text-blue-700">
+          <span className="text-xl">ℹ️</span>
+          <p>We have over 150 caregivers, let's find the best fit for you</p>
+        </div>
+      </div>
+
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">When do you need care?</h2>
+      
+      <div className="space-y-4">
+        <div>
+          <input
+            type="date"
+            placeholder="Estimated start date"
+            className="w-full p-4 rounded-lg border-2 border-gray-200 focus:border-teal-500"
+            value={formData.startDate}
+            onChange={(e) => handleInputChange('startDate', e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <input
+            type="date"
+            placeholder="Estimated end date (optional)"
+            className="w-full p-4 rounded-lg border-2 border-gray-200 focus:border-teal-500"
+            value={formData.endDate}
+            onChange={(e) => handleInputChange('endDate', e.target.value)}
+          />
+        </div>
+
+        <label className="flex items-center space-x-3">
+          <input
+            type="checkbox"
+            checked={formData.isFlexible}
+            onChange={(e) => handleInputChange('isFlexible', e.target.checked)}
+            className="w-5 h-5 rounded border-gray-300 text-teal-600"
+          />
+          <span className="text-gray-700">My start date is flexible</span>
+        </label>
+      </div>
+    </div>
+  );
+
+  const renderStep8 = () => (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold text-teal-700 mb-6">Which days?</h2>
+      
+      <div className="grid grid-cols-7 gap-2 mb-6">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+          <button
+            key={day}
+            onClick={() => {
+              const days = formData.schedule.days.includes(day)
+                ? formData.schedule.days.filter(d => d !== day)
+                : [...formData.schedule.days, day];
+              handleInputChange('schedule', { ...formData.schedule, days });
+            }}
+            className={`p-3 rounded-lg text-center ${
+              formData.schedule.days.includes(day)
+                ? 'bg-teal-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {day}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 mb-6">
+        {['Mornings', 'Afternoons', 'Evenings'].map((time) => (
+          <button
+            key={time}
+            onClick={() => {
+              const times = formData.schedule.times.includes(time)
+                ? formData.schedule.times.filter(t => t !== time)
+                : [...formData.schedule.times, time];
+              handleInputChange('schedule', { ...formData.schedule, times });
+            }}
+            className={`p-3 rounded-lg text-center ${
+              formData.schedule.times.includes(time)
+                ? 'bg-teal-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {time}
+          </button>
+        ))}
+      </div>
+
+      <button
+        onClick={() => {
+          const times = formData.schedule.times.includes('Overnight')
+            ? formData.schedule.times.filter(t => t !== 'Overnight')
+            : [...formData.schedule.times, 'Overnight'];
+          handleInputChange('schedule', { ...formData.schedule, times });
+        }}
+        className={`p-3 rounded-lg text-center w-full ${
+          formData.schedule.times.includes('Overnight')
+            ? 'bg-teal-600 text-white'
+            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+        }`}
+      >
+        Overnight
+      </button>
+
+      <button className="text-teal-600 hover:text-teal-700 font-medium mt-4">
+        Add specific times instead
+      </button>
+
+      <label className="flex items-center space-x-3 mt-4">
+        <input
+          type="checkbox"
+          checked={formData.schedule.isVariable}
+          onChange={(e) => handleInputChange('schedule', {
+            ...formData.schedule,
+            isVariable: e.target.checked
+          })}
+          className="w-5 h-5 rounded border-gray-300 text-teal-600"
+        />
+        <span className="text-gray-700">My schedule may vary</span>
+      </label>
+    </div>
+  );
+
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div
+                key={i}
+                className={`w-3 h-3 rounded-full ${
+                  i <= step ? 'bg-teal-500' : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-gray-500">Step {step} of 8</span>
+        </div>
+      </div>
+
+      <form onSubmit={(e) => e.preventDefault()}>
+        {step === 1 && renderStep1()}
+        {step === 2 && renderStep2()}
+        {step === 3 && renderStep3()}
+        {step === 4 && renderStep4()}
+        {step === 5 && renderStep5()}
+        {step === 6 && renderStep6()}
+        {step === 7 && renderStep7()}
+        {step === 8 && renderStep8()}
+
+        <div className="flex justify-between mt-8">
+          {step > 1 && (
+            <button
+              onClick={handleBack}
+              className="px-6 py-3 text-teal-600 hover:text-teal-700 font-medium"
+            >
+              Back
+            </button>
+          )}
+          <button
+            onClick={handleNext}
+            className="px-8 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-medium ml-auto"
+          >
+            {step === 8 ? 'Submit' : 'Next'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default PostBoxForm;
+export default MultiStepCareForm;
