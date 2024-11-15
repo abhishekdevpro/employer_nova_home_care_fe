@@ -8,7 +8,7 @@
 // export default function FilterTopBox() {
 //   return (
 //     <div className="min-h-screen bg-white ">
-      
+
 //       <div className="flex">
 //         <main className="flex-1 pe-2">
 //           <div className="flex justify-between items-center mb-4">
@@ -16,7 +16,7 @@
 //             <Link to={"/employers-dashboard/post-jobs"}>
 //             <Button className="bg-violet-900 text-white">Post Job</Button>
 //             </Link>
-          
+
 //           </div>
 //           <div className="overflow-x-auto border">
 //             <table className="min-w-full divide-y divide-gray-200">
@@ -59,7 +59,7 @@
 //             </table>
 //           </div>
 //         </main>
-        
+
 //       </div>
 //     </div>
 //   );
@@ -248,10 +248,10 @@
 //     </svg>
 //   );
 // }
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import SearchBar from './SearchBar';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 const FilterTopBox = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -265,12 +265,19 @@ const FilterTopBox = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-teal-600 hover:text-teal-700"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d={
+                isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+              }
             />
           </svg>
         </button>
@@ -283,10 +290,15 @@ const FilterTopBox = () => {
             <div className="w-full">
               <SearchBar />
             </div>
-            
+
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h1 className="text-2xl font-bold text-teal-700 hidden lg:block">All Jobs</h1>
-              <Link to="/employers-dashboard/post-jobs" className="w-full sm:w-auto">
+              <h1 className="text-2xl font-bold text-teal-700 hidden lg:block">
+                All Jobs
+              </h1>
+              <Link
+                to="/employers-dashboard/post-jobs"
+                className="w-full sm:w-auto"
+              >
                 <Button className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md w-full sm:w-auto">
                   Post Job
                 </Button>
@@ -301,20 +313,40 @@ const FilterTopBox = () => {
               <table className="min-w-full divide-y divide-teal-200">
                 <thead className="bg-teal-100">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">Created On</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">Job Title</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">
+                      Created On
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">
+                      Job Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-teal-800 uppercase">
+                      Status
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-teal-100">
                   <tr>
                     <td className="px-6 py-4 text-sm text-teal-600">Sep 05</td>
                     <td className="px-6 py-4 text-sm font-medium text-teal-700">
-                      <Link to={'/employers-job-detail/1'} className="hover:underline">Nanny Needed For My Children in Waltham</Link>
-                      <div className="text-sm text-teal-500">0 - 1 yrs • Jaipur</div>
-                      <a href="#" className="text-sm text-teal-600 hover:underline">View Recommended Candidates</a>
+                      <Link
+                        to={"/employers-job-detail/1"}
+                        className="hover:underline"
+                      >
+                        Nanny Needed For My Children in Waltham
+                      </Link>
+                      <div className="text-sm text-teal-500">
+                        0 - 1 yrs • Jaipur
+                      </div>
+                      <a
+                        href="#"
+                        className="text-sm text-teal-600 hover:underline"
+                      >
+                        View Recommended Candidates
+                      </a>
                     </td>
-                    <td className="px-6 py-4 text-sm text-teal-600">Published</td>
+                    <td className="px-6 py-4 text-sm text-teal-600">
+                      Published
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -324,13 +356,25 @@ const FilterTopBox = () => {
             <div className="md:hidden space-y-4">
               <div className="bg-white border border-teal-200 rounded-lg p-4 shadow-sm">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-teal-700 font-medium">Nanny Needed For My Children in Waltham</h3>
+                  <h3 className="text-teal-700 font-medium">
+                    <Link to={'/employers-job-detail/1'}>
+                    Nanny Needed For My Children in Waltham
+                     
+                    </Link>
+                  </h3>
                   <span className="text-sm text-teal-600">Sep 05</span>
                 </div>
-                <div className="text-sm text-teal-500 mb-2">0 - 1 yrs • Jaipur</div>
+                <div className="text-sm text-teal-500 mb-2">
+                  0 - 1 yrs • Jaipur
+                </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-teal-600">Published</span>
-                  <a href="#" className="text-sm text-teal-600 hover:underline">View Candidates</a>
+                  <Link
+                    to={"/employers-job-applicants/1"}
+                    className="text-sm text-teal-600 hover:underline"
+                  >
+                    View Applicants
+                  </Link>
                 </div>
               </div>
             </div>
@@ -343,4 +387,3 @@ const FilterTopBox = () => {
 
 export default FilterTopBox;
 // Continue with the other icons, applying the teal color scheme similarly
-

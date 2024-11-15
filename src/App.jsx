@@ -119,6 +119,7 @@ import Novahome from './pages/Novahome.jsx'
 import ForgotPassword from "./pages/others/ForgotPassword";
 import EmployerJobDetails from "./pages/employers-dashboard/employers-job-details";
 import Caregivers from '@/pages/Caregivers'
+import JobDetailsPage from "./components/dashboard-pages/employers-dashboard/employer-job-details";
 
 function App() {
   useEffect(() => {
@@ -200,8 +201,12 @@ function App() {
                   element={<EmployerListPage2 />}
                 />
                 <Route
-                  path="employers-job-detail/:id"
+                  path="employers-job-applicants/:id"
                   element={<EmployerJobDetails />}
+                />
+                <Route
+                  path="employers-job-detail/:id"
+                  element={<JobDetailsPage />}
                 />
                 <Route
                   path="caregiver-profile-page/:id"
