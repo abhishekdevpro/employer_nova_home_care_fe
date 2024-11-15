@@ -27,7 +27,7 @@ const index = () => {
       {/* <!-- End User Sidebar Menu --> */}
 
       {/* <!-- Dashboard --> */}
-      <section className="user-dashboard bg-violet-50 ">
+      <section className="user-dashboard bg-teal-50 ">
         <div className="dashboard-outer">
           <BreadCrumb title="Post a New Job!" />
           {/* breadCrumb */}
@@ -38,20 +38,9 @@ const index = () => {
           <div className="row">
             <div className="col-lg-12">
               {/* <!-- Ls widget --> */}
-              <div className="ls-widget">
-                <div className="tabs-box">
-                  <div className="widget-title">
-                    <h4>Post Job</h4>
-                  </div>
-
-                  <div className="widget-content">
-                    {/* <PostJobSteps /> */}
-                    {/* End job steps form */}
+              <div className="widget-content">
                     <PostBoxForm />
-                    {/* End post box form */}
                   </div>
-                </div>
-              </div>
             </div>
           </div>
           {/* End .row */}

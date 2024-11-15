@@ -26,7 +26,7 @@ const MyProfileEmploeeDBPage = () => {
       {/* <!-- End User Sidebar Menu --> */}
 
       {/* <!-- Dashboard --> */}
-      <section className="user-dashboard bg-violet-50  bg-violet-50">
+      <section className="user-dashboard  bg-teal-50">
         <div className="dashboard-outer">
           <BreadCrumb title="My Profile" />
           {/* breadCrumb */}
@@ -40,17 +40,9 @@ const MyProfileEmploeeDBPage = () => {
           <div className="row">
             <div className="col-lg-12">
               {/* <!-- Ls widget --> */}
-              <div className="ls-widget">
-                <div className="tabs-box">
-                  <div className="widget-title">
-                    <h4>My Profile</h4>
-                  </div>
-
-                  <div className="widget-content">
+              <div className="widget-content">
                     <MyProfile />
                   </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

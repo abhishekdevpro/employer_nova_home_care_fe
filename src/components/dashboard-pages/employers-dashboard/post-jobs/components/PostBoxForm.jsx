@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MultiStepCareForm = () => {
   const [step, setStep] = useState(1);
@@ -28,7 +29,7 @@ const MultiStepCareForm = () => {
       isVariable: false
     }
   });
-
+  const navigate = useNavigate()
   // const handleNext = () => {
   //   if (step === 8) {
   //     // Validate required fields
@@ -154,7 +155,7 @@ const MultiStepCareForm = () => {
       setStep(1);
   
       alert('Form submitted successfully!');
-      Navigate('/employers-list-v2')
+      navigate('/employers-list-v2')
     } else {
       setStep(step + 1);
     }
@@ -490,7 +491,7 @@ const MultiStepCareForm = () => {
   );
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-8xl mx-auto p-6 bg-white rounded-xl shadow-lg">
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">

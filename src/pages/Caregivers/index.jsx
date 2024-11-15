@@ -1,10 +1,4 @@
-// import FooterDefault from "../../footer/common-footer";
-// import Breadcrumb from "../../common/Breadcrumb";
-// import LoginPopup from "../../common/form/login/LoginPopup";
-// import DefaulHeader2 from "../../header/DefaulHeader2";
-// import MobileMenu from "../../header/MobileMenu";
-// import FilterTopBox from "./FilterTopBox";
-// import FilterSidebar from "./FilterSidebar";
+
 import DashboardHeader from "@/components/header/DashboardHeader";
 import LoginPopup from "@/components/common/form/login/LoginPopup";
 import MobileMenu from "@/components/header/MobileMenu";

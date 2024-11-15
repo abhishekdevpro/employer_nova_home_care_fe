@@ -119,7 +119,6 @@ import Novahome from './pages/Novahome.jsx'
 import ForgotPassword from "./pages/others/ForgotPassword";
 import EmployerJobDetails from "./pages/employers-dashboard/employers-job-details";
 import Caregivers from '@/pages/Caregivers'
-import EditProfile from '@/pages/Caregivers/EditProfile'
 
 function App() {
   useEffect(() => {
@@ -195,6 +194,7 @@ function App() {
                   path="employers-list-v1"
                   element={<EmployerListPage1 />}
                 /> 
+                {/* nova home care Routes */}
                 <Route
                   path="employers-list-v2"
                   element={<EmployerListPage2 />}
@@ -207,25 +207,17 @@ function App() {
                   path="caregiver-profile-page/:id"
                   element={<Caregivers />}
                 />
-                <Route
-                  path="caregiver-edit-profile/:id"
-                  element={<EditProfile />}
-                />
+                
+                {/* nova home care Routes */}
+
                  <Route
                   path="employers-list"
                   element={<EmployerList />}
                 />
-               
-
-                  <Route path="employers-list-v3" element={<EmployerListPage3 />} />
-                  <Route path="employers-list-v4" element={<EmployerListPage4 />} /> 
-
                 <Route
                   path="employers-single-v1/:id"
                   element={<EmployersSingleV1 />}
                 />
-                {/* <Route path="employers-single-v2/:id" element={<EmployersSingleV2 />} />
-                  <Route path="employers-single-v3/:id" element={<EmployersSingleV3 />} /> */}
 
                 <Route
                   path="candidates-list-v1"
