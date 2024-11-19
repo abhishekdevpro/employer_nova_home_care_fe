@@ -20,7 +20,7 @@ const Applicants = () => {
                 />
               </figure>
               <h4 className="name">
-                <Link to={`/candidates-single-v1/${candidate.id}`}>
+                <Link to={`/caregiver-profile-page/1`}>
                   {candidate.name}
                 </Link>
               </h4>

@@ -18,31 +18,31 @@ export default function JobListingsTable() {
   const [jobToDelete, setJobToDelete] = useState(null);
   const token = localStorage.getItem(Constant.USER_TOKEN);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://api.sentryspot.co.uk/api/employeer/job-post", {
-          headers: {
-            Authorization: token,
-          },
-        });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch("https://api.sentryspot.co.uk/api/employeer/job-post", {
+  //         headers: {
+  //           Authorization: token,
+  //         },
+  //       });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch job listings");
-        }
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch job listings");
+  //       }
 
-        const result = await response.json();
-        setData(result.data || []); // Set the job array, default to an empty array
-        setIsLoading(false);
-      } catch (error) {
-        setIsError(true);
-        setIsLoading(false);
-        toast.error(error.message || "Something went wrong");
-      }
-    };
+  //       const result = await response.json();
+  //       setData(result.data || []); // Set the job array, default to an empty array
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       setIsError(true);
+  //       setIsLoading(false);
+  //       toast.error(error.message || "Something went wrong");
+  //     }
+  //   };
 
-    fetchData();
-  }, [token]);
+  //   fetchData();
+  // }, [token]);
 
   const handleEditClick = (id) => {
     setSelectedJobId(id);
@@ -137,17 +137,17 @@ export default function JobListingsTable() {
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Job Details</h1>
             <Link to={"/employers-dashboard/post-jobs"}>
-              <Button className="bg-violet-900 text-white">Post Job</Button>
+              <Button className="bg-teal-900 text-white">Post Job</Button>
             </Link>
           </div>
           <div className="overflow-x-auto border">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-violet-100">
+              <thead className="bg-teal-100">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase">CREATED ON</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">JOB TITLE</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">STATUS</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">ENGAGEMENT</th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">APPLICANTS</th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">ACTIONS</th>
                 </tr>
               </thead>

@@ -26,7 +26,7 @@ const index = () => {
       {/* <!-- End User Sidebar Menu --> */}
 
       {/* <!-- Dashboard --> */}
-      <section className="user-dashboard bg-violet-50 ">
+      <section className="user-dashboard bg-teal-50 ">
         <div className="dashboard-outer">
           <BreadCrumb title="Packages!" />
           {/* breadCrumb */}
@@ -38,9 +38,9 @@ const index = () => {
             <div className="col-lg-12">
               <div className="ls-widget">
                 <div className="tabs-box">
-                  <div className="widget-title">
+                  {/* <div className="widget-title">
                     <h4>My Packages</h4>
-                  </div>
+                  </div> */}
                   {/* End widget-title */}
 
                   <div className="widget-content">

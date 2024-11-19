@@ -38,7 +38,7 @@ const EmployerJobDetails = () => {
     <div className="max-w-8xl mx-auto p-6 bg-white">
       {/* Header Navigation */}
       <div className="flex justify-between border-b pb-4 mb-6">
-        <div className="flex space-x-8">
+        {/* <div className="flex space-x-8">
           <button
             className={`${activeTab === 'APPLICANTS' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-600 hover:text-teal-600'}`}
             onClick={() => handleTabClick('APPLICANTS')}
@@ -63,7 +63,7 @@ const EmployerJobDetails = () => {
           >
             HIRED
           </button>
-        </div>
+        </div> */}
         <div className="flex items-center space-x-4">
           <select className="border rounded-md px-3 py-1 text-gray-600">
             <option>Child caregivers</option>

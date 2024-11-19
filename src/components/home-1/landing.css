@@ -13,9 +13,9 @@ body {
 /* button {
   padding: 6px 25px;
 } */
-button:hover {
+/* button:hover {
   background: #4c0269;
-}
+} */
 
 .container {
   width: 1280px;
@@ -54,19 +54,19 @@ button:hover {
   border: none;
   cursor: pointer;
 }
-.side-menu button:hover {
+/* .side-menu button:hover {
   background-color: #ee2c3c;
-}
+} */
 button.register-btn {
   background: transparent;
   border: 1px solid #ffffff;
   color: #ffffff;
 }
-button.register-btn:hover {
+/* button.register-btn:hover {
   border: 1px solid #ee2c3c;
   background: transparent;
   color: #ee2c3c;
-}
+} */
 .dropdown:hover .dropdown-content {
   display: block;
 }

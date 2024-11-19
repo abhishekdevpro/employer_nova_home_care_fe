@@ -11,7 +11,7 @@ const LoginPage = () => {
   return (
     <>
       <MetaComponent meta={metadata} />
-
+       
       <LogIn />
     </>
   );
