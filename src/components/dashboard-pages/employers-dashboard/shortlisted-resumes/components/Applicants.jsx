@@ -13,16 +13,13 @@ const Applicants = () => {
           <div className="inner-box">
             <div className="content">
               <figure className="image">
-                <img
-                
-                  src={candidate.avatar}
-                  alt="candidates"
-                />
+                <img src={candidate.avatar} alt="candidates" />
               </figure>
               <h4 className="name">
-                <Link to={`/candidates-single-v1/${candidate.id}`}>
+                {/* <Link to={`/candidates-single-v1/${candidate.id}`}>
                   {candidate.name}
-                </Link>
+                </Link> */}
+                <Link to="/caregiver-profile-page/1">{candidate.name}</Link>
               </h4>
 
               <ul className="candidate-info">
