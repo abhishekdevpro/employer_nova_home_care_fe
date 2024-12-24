@@ -120,6 +120,8 @@ import ForgotPassword from "./pages/others/ForgotPassword";
 import EmployerJobDetails from "./pages/employers-dashboard/employers-job-details";
 import Caregivers from '@/pages/Caregivers'
 import JobDetailsPage from "./components/dashboard-pages/employers-dashboard/employer-job-details";
+import VerifyPage from "./components/pages-menu/register/VerifyPage";
+import ResetPassword from "./components/auth/ResetPassword";
 
 function App() {
   useEffect(() => {
@@ -190,11 +192,18 @@ function App() {
                   path="job-single-v5/:id"
                   element={<JobSingleDynamicV5 />}
                 />
-
-                 <Route
+                <Route
+                  path="/employer/verify/:token"
+                  element={<VerifyPage />}
+                />
+                <Route
+                  path="/employer/reset-password/:token"
+                  element={<ResetPassword />}
+                />
+                <Route
                   path="employers-list-v1"
                   element={<EmployerListPage1 />}
-                /> 
+                />
                 {/* nova home care Routes */}
                 <Route
                   path="employers-list-v2"
@@ -212,13 +221,10 @@ function App() {
                   path="caregiver-profile-page/:id"
                   element={<Caregivers />}
                 />
-                
+
                 {/* nova home care Routes */}
 
-                 <Route
-                  path="employers-list"
-                  element={<EmployerList />}
-                />
+                <Route path="employers-list" element={<EmployerList />} />
                 <Route
                   path="employers-single-v1/:id"
                   element={<EmployersSingleV1 />}
@@ -270,7 +276,7 @@ function App() {
                 <Route path="contact" element={<ContactPage />} />
                 <Route path="login" element={<LoginPage />} />
                 <Route path="register" element={<RegisterPage />} />
-                <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="404" element={<NotFoundPage />} />
                 <Route path="*" element={<NotFoundPage />} />
 
@@ -292,9 +298,7 @@ function App() {
                     path="manage-jobs"
                     element={<ManageJobsEmploeeDBPage />}
                   />
-                   <Route 
-                path="community"
-                element={<Community/>}/>
+                  <Route path="community" element={<Community />} />
                   <Route
                     path="all-applicants"
                     element={<AllApplicantsEmploeesPage />}
@@ -305,7 +309,7 @@ function App() {
                   />
                   <Route path="packages" element={<PackageEmploeeDBPage />} />
                   <Route path="buycoin" element={<BuycoinDBPage />} />
-                  
+
                   <Route path="messages" element={<MessageEmploeeDBPage />} />
                   <Route
                     path="resume-alerts"

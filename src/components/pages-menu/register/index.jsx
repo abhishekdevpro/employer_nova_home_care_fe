@@ -34,7 +34,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Assuming you're using react-router for navigation
 import logo from "@/pages/NovaHome/assests/logo.png";
 import { ArrowLeft } from "lucide-react";
-
+import axios from "axios"; // Import axios for API requests
+import { toast } from "react-toastify";
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -44,6 +45,8 @@ const RegisterForm = () => {
     password: "",
     acceptTerms: false,
   });
+  const [loading, setLoading] = useState(false); // Loading state for submit button
+  const [error, setError] = useState(null); // Error state to handle any API errors
 
   const navigate = useNavigate(); // Navigation hook
 
@@ -55,21 +58,48 @@ const RegisterForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Handle form submission logic here
-    console.log(formData);
+    // Show loading state while waiting for API response
+    setLoading(true);
+    setError(null); // Reset any previous error
 
-    // Reset the form fields
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      password: "",
-      acceptTerms: false,
-    });
+    try {
+      // Make the registration API call
+      const response = await axios.post(
+        "https://api.novahome.care/api/employer/employerRegister", // Replace with your API endpoint
+        {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }
+      );
+
+      // Reset the form fields
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        password: "",
+        acceptTerms: false,
+      });
+
+      // Redirect to login page after successful registration
+      // navigate("/login");
+      toast.success("Please verify your account on your email");
+    } catch (error) {
+      // Handle error if the registration fails
+      setError("Something went wrong, please try again.");
+      console.error("Error during registration:", error);
+      toast.error("Something went wrong, please try again.");
+    } finally {
+      // Hide loading state
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,18 +115,18 @@ const RegisterForm = () => {
 
       <div className="bg-white rounded-lg shadow-md max-w-6xl w-full flex flex-col md:flex-row">
         {/* Right side (Company Logo and Welcome Message) */}
-         <div className="md:w-1/2 bg-teal-100 p-8 flex flex-col items-center justify-center">
-            <div className="max-w-md w-full">
-              <img src={logo} className="w-40 h-auto mb-6"  alt="" />
-              <h2 className="text-3xl font-bold text-teal-700 mb-4 ">
-            Welcome to Nova Homecare
-          </h2>
-              <p className="text-gray-700">
-            We are glad to have you here. Please fill out the form to register
-            and start exploring our services.
-          </p>
-            </div>
+        <div className="md:w-1/2 bg-teal-100 p-8 flex flex-col items-center justify-center">
+          <div className="max-w-md w-full">
+            <img src={logo} className="w-40 h-auto mb-6" alt="" />
+            <h2 className="text-3xl font-bold text-teal-700 mb-4">
+              Welcome to Nova Homecare
+            </h2>
+            <p className="text-gray-700">
+              We are glad to have you here. Please fill out the form to register
+              and start exploring our services.
+            </p>
           </div>
+        </div>
 
         {/* Left side (Form) */}
         <div className="md:w-1/2 w-full p-6">
@@ -181,11 +211,13 @@ const RegisterForm = () => {
               <button
                 type="submit"
                 className="w-full bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50"
+                disabled={loading} // Disable button while loading
               >
-                Register
+                {loading ? "Registering..." : "Register"}
               </button>
             </div>
           </form>
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
         </div>
       </div>
     </div>
