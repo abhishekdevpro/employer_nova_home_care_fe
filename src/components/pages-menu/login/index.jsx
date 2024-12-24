@@ -34,6 +34,7 @@ import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import logo from "@/pages/NovaHome/assests/logo.png";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -49,15 +50,45 @@ const LoginForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   console.log(formData);
+  //   setFormData({
+  //     email: "",
+  //     password: "",
+  //   });
+  // };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    setFormData({
-      email: "",
-      password: "",
-    });
-  };
+    setError(""); // Reset error state
+    try {
+      const response = await axios.post(
+        "https://api.novahome.care/api/employer/employerLogin",
+        formData
+      );
 
+      if (response.status === 200) {
+        const tokenKey = "token";
+        localStorage.setItem(tokenKey, response.data.data.token);
+        console.log("Login successful:", response.data);
+        navigate("/employers-dashboard/dashboard");
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 200
+        console.error("Login failed:", error.response.data.message);
+        setError(error.response.data.message || "Invalid login credentials");
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("No response received:", error.request);
+        setError("No response from server. Please try again later.");
+      } else {
+        // Other errors
+        console.error("Error during request:", error.message);
+        setError("An error occurred. Please try again.");
+      }
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-teal-50 p-4">
       {/* Back to Home Button */}
@@ -119,27 +150,25 @@ const LoginForm = () => {
                   />
                 </div>
                 <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleChange}
-                className="w-4 h-4 text-teal-500 border-gray-300 focus:ring-teal-400"
-                required
-              />
-              <label className="text-gray-700">
-                I accept the Terms and Policy
-              </label>
-            </div>
+                  <input
+                    type="checkbox"
+                    name="acceptTerms"
+                    checked={formData.acceptTerms}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-teal-500 border-gray-300 focus:ring-teal-400"
+                    required
+                  />
+                  <label className="text-gray-700">
+                    I accept the Terms and Policy
+                  </label>
+                </div>
                 <div className="pt-4">
-                 <Link to={'/employers-dashboard/dashboard'}>
-                 <button
+                  <button
                     type="submit"
                     className="w-full bg-teal-500 text-white font-semibold py-3 px-4 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50 transition-all duration-200 text-lg"
                   >
                     Login
                   </button>
-                 </Link>
                 </div>
               </form>
               {/* Forgot Password Link */}
@@ -154,7 +183,10 @@ const LoginForm = () => {
               <div className="mt-4 text-center">
                 <p className="text-gray-600">
                   Don’t have an account?{" "}
-                  <Link to={'/register'} className="text-teal-600 hover:underline">
+                  <Link
+                    to={"/register"}
+                    className="text-teal-600 hover:underline"
+                  >
                     Create one
                   </Link>
                 </p>
